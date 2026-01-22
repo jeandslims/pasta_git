@@ -1,4 +1,6 @@
-print('olá github')
-print("Testando feature")
-#Teste teste testando
-teste = input("Está testando? ")
+from pathlib import Path
+
+caminho = Path.home()
+print(caminho)
+for arquivo in caminho.glob("*"):
+    caminho_arquivo = print(arquivo)
