@@ -618,4 +618,4 @@ def uptade_graph(selectec_tri, selected_sex, selected_race, selected_age, select
     return fig
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug = False)
