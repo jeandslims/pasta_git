@@ -14,6 +14,17 @@ app.layout = html.Div([
     
     dcc.Graph(id = 'graph_sex'),
     dcc.Dropdown(
+        id = 'dropdown_indicator',
+        options = {'Taxa de desocupação':'Taxa de desocupação',
+                   'Nível da ocupação':'Nível da ocupação',
+                   'Participação':'Nível de participação',
+                   'Renda habitual total':'Renda habitual total',
+                   'Renda habitual principal':'Renda habitual principal',
+                   'Renda efetiva total':'Renda efetiva total',
+                   'Renda efetiva principal':'Renda efetiva principal'},
+        value = 'Taxa de desocupação'
+    ),
+    dcc.Dropdown(
         id = 'dropdown_period',
         options = {"1° Tri.":"1° Tri.",
                    "2° Tri.":"2° Tri.",
@@ -41,12 +52,16 @@ app.layout = html.Div([
 
 @app.callback(
     Output('graph_sex', 'figure'),
-    [Input('dropdown_period', 'value'),
+    [Input('dropdown_indicator', 'value'),
+     Input('dropdown_period', 'value'),
      Input('dropdown_region', 'value'),
      Input('dropdown_sex', 'value')]
 )
-def uptade_figure(selected_period, selected_region, selected_sex):
+def uptade_figure(selected_indicator, selected_period, selected_region, selected_sex):
     df_copia = df_.copy()
+
+    if selected_indicator:
+        df_copia = df_copia[['Fonte', 'Sexo', 'Local', selected_indicator]]
 
     if selected_period:
         df_copia = df_copia[df_copia['Fonte'].str.contains(selected_period)]
@@ -62,8 +77,11 @@ def uptade_figure(selected_period, selected_region, selected_sex):
         
     fig = px.line(
         df_copia,
-        x = 'Fonte', y = 'Taxa de desocupação',
-        color = 'Local'
+        x = 'Fonte', y = selected_indicator,
+        color = 'Local',
+        labels = {'Fonte': 'Período',
+                  selected_indicator:selected_indicator,
+                  'Local':'Região Geográfica'}
     )
 
     return fig
